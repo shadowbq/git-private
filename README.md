@@ -15,6 +15,12 @@ $> git-private "${GITHUB_TOKEN}" "${git_tag}" myorg private-repo "${filename}" "
 $> git-private ABCDEFGHIJ0123456789 v0.0.1 myorg private-repo foo.tar.gz /var/tmp/foo.tar.gz
 ```
 
+## Download
+
+```bash
+curl --silent --show-error --no-buffer --request GET https://raw.githubusercontent.com/shadowbq/git-private/master/git-private --output git-private
+```
+
 ## Original Fork (gist)
 
 https://gist.github.com/nikosev/24d1a784aee16966c91a9ebe341b8388/revisions

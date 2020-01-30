@@ -15,7 +15,7 @@ $> git-private "${GITHUB_TOKEN}" "${git_tag}" myorg private-repo "${filename}" "
 $> git-private ABCDEFGHIJ0123456789 v0.0.1 myorg private-repo foo.tar.gz /var/tmp/foo.tar.gz
 ```
 
-## Download
+## Download & Install
 
 ```bash
 curl --silent --show-error --no-buffer --request GET https://raw.githubusercontent.com/shadowbq/git-private/master/git-private --output git-private

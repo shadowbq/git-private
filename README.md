@@ -17,6 +17,8 @@ $> export GITHUB_TOKEN=${GITHUB_TOKEN}
 $> git-private "${git_tag}" myorg private-repo "${filename}" "${archive:?}/${filename}"
 ```
 
+Reference: https://security.stackexchange.com/q/20282
+
 ###  less secure option
 
 You can pass the ENV directly on the same line, but this **will end up in the process list, exposing your `GITHUB_TOKEN`** to other users on the system.

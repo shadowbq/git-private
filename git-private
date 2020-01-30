@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
-#
 # shellcheck shell=bash
+# 
+# Licensed MIT/BSD copyright 2020: shadowbq
+# Homepage: https://github.com/shadowbq/git-private
+#
 # Example usage: 
-#  git-private "${GITHUB_TOKEN}" "${git_tag}" myorg private-repo "${filename}" "${archive:?}/${filename}"
-#  git-private ABCDEFGHIJ0123456789 v0.0.1 myorg private-repo foo.tar.gz /var/tmp/foo.tar.gz
+#  export GITHUB_TOKEN=${GITHUB_TOKEN} 
+#  git-private "${git_tag}" myorg private-repo "${filename}" "${archive:?}/${filename}"
+# 
+#  - or less secure -
+#
+#  GITHUB_TOKEN=ABCDEFGHIJ0123456789 git-private v0.0.1 myorg private-repo foo.tar.gz /var/tmp/foo.tar.gz
 #
 set -euo pipefail
 IFS=$'\n\t'
@@ -20,12 +27,17 @@ if [[ $? -eq 1 ]]; then
   exit 1
 fi
 
-readonly gh_oauth_token="${1:-}"
-readonly git_tag="${2:-}"
-readonly gh_repo_owner="${3:-}"
-readonly gh_repo_name="${4:-}"
-readonly release_asset_filename="${5:-}"
-readonly output_path="${6:-release_asset_filename}"
+readonly gh_oauth_token=${GITHUB_TOKEN:-}
+if [[ -z ${gh_oauth_token} ]]; then 
+  echo "ENV:GITHUB_TOKEN is not set, you must pass it on the CLI or set it in your ENV"
+  exit 1
+fi
+
+readonly git_tag="${1:-}"
+readonly gh_repo_owner="${2:-}"
+readonly gh_repo_name="${3:-}"
+readonly release_asset_filename="${4:-}"
+readonly output_path="${5:-release_asset_filename}"
 
 gh_tag_id=$(curl --silent --show-error \
                      --no-buffer \

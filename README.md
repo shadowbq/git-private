@@ -10,9 +10,19 @@ A `bash` cli command to download Github releases from private repositories.
 
 ## Example usage: 
 
+Securely set the `GITHUB_TOKEN` in the ENV. Then execute `git-private`
+
 ```bash
-$> git-private "${GITHUB_TOKEN}" "${git_tag}" myorg private-repo "${filename}" "${archive:?}/${filename}"
-$> git-private ABCDEFGHIJ0123456789 v0.0.1 myorg private-repo foo.tar.gz /var/tmp/foo.tar.gz
+$> export GITHUB_TOKEN=${GITHUB_TOKEN} 
+$> git-private "${git_tag}" myorg private-repo "${filename}" "${archive:?}/${filename}"
+```
+
+###  less secure option
+
+You can pass the ENV directly on the same line, but this **will end up in the process list, exposing your `GITHUB_TOKEN`** to other users on the system.
+
+```bash
+GITHUB_TOKEN=ABCDEFGHIJ0123456789 git-private v0.0.1 myorg private-repo foo.tar.gz /var/tmp/foo.tar.gz
 ```
 
 ## Download & Install

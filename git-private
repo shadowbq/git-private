@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#
+# shellcheck shell=bash
+# Example usage: 
+#  git-private "${GITHUB_TOKEN}" "${git_tag}" myorg private-repo "${filename}" "${archive:?}/${filename}"
+#  git-private ABCDEFGHIJ0123456789 v0.0.1 myorg private-repo foo.tar.gz /var/tmp/foo.tar.gz
+#
+set -euo pipefail
+IFS=$'\n\t'
+
+command -v jq >/dev/null 2>&1
+if [[ $? -eq 1 ]]; then
+  echo "jq missing, please install."
+  exit 1
+fi
+
+command -v curl >/dev/null 2>&1
+if [[ $? -eq 1 ]]; then
+  echo "curl missing, please install."
+  exit 1
+fi
+
+readonly gh_oauth_token="${1:-}"
+readonly git_tag="${2:-}"
+readonly gh_repo_owner="${3:-}"
+readonly gh_repo_name="${4:-}"
+readonly release_asset_filename="${5:-}"
+readonly output_path="${6:-release_asset_filename}"
+
+gh_tag_id=$(curl --silent --show-error \
+                     --no-buffer \
+                     --header "Authorization: token $gh_oauth_token" \
+                     --request GET \
+                     "https://api.github.com/repos/$gh_repo_owner/$gh_repo_name/releases" \
+                     | jq --raw-output ".[] \
+                     | select(.tag_name==\"$git_tag\").id")
+
+download_url=$(curl --silent --show-error \
+                    --no-buffer \
+                    --header "Authorization: token $gh_oauth_token" \
+                    --header "Accept: application/vnd.github.v3.raw" \
+                    --location \
+                    --request GET \
+                    "https://api.github.com/repos/$gh_repo_owner/$gh_repo_name/releases/$gh_tag_id" \
+                    | jq --raw-output ".assets[] \
+                    | select(.name==\"$release_asset_filename\").url")
+
+redirect_url=$(curl --silent --no-buffer --show-error \
+          --header "Authorization: token $gh_oauth_token" \
+          --header "Accept: application/octet-stream" \
+          --request GET \
+          --write-out "%{redirect_url}" \
+          "$download_url")
+
+curl --silent --no-buffer --show-error \
+          --header "Accept: application/octet-stream" \
+          --output "$output_path" \
+          --request GET \
+          "$redirect_url"

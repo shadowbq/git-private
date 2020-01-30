@@ -19,6 +19,8 @@ $> git-private ABCDEFGHIJ0123456789 v0.0.1 myorg private-repo foo.tar.gz /var/tm
 
 ```bash
 curl --silent --show-error --no-buffer --request GET https://raw.githubusercontent.com/shadowbq/git-private/master/git-private --output git-private
+chmod +x ./git-private
+(sudo) mv ./git-private /usr/local/bin/.
 ```
 
 ## Original Fork (gist)

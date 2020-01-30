@@ -1,5 +1,7 @@
 # git-private
 
+A `bash` cli command to download Github releases from private repositories.
+
 ## Requirements
 
 * [jq](https://stedolan.github.io/jq/) - a lightweight and flexible command-line JSON processor
